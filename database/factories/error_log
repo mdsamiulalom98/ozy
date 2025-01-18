@@ -1,0 +1,4 @@
+[24-Dec-2024 08:52:00 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Factories\Factory" not found in /home/ozybdcom/public_html/database/factories/UserFactory.php:11
+Stack trace:
+#0 {main}
+  thrown in /home/ozybdcom/public_html/database/factories/UserFactory.php on line 11
