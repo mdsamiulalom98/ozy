@@ -204,7 +204,7 @@ class FrontendController extends Controller
             ->get();
 
         $shippingcharge = ShippingCharge::where('status', 1)->get();
-        
+
         $reviews = Review::where('product_id', $details->id)->get();
 
         $productcolors = ProductVariable::where('product_id', $details->id)->where('stock', '>', 0)
@@ -235,7 +235,8 @@ class FrontendController extends Controller
     public function shipping_charge(Request $request)
     {
         $shipping = ShippingCharge::where(['id' => $request->id])->first();
-        Session::put('shipping', $shipping->amount);
+        $shipping_amount = $shipping->amount ?? 0;
+        Session::put('shipping', $shipping_amount);
         return view('frontEnd.layouts.ajax.cart');
     }
     public function shipping_charge_cam(Request $request)
@@ -313,7 +314,7 @@ class FrontendController extends Controller
 
         $product = Product::select('id', 'name', 'slug', 'new_price', 'old_price', 'purchase_price', 'type', 'stock')->where(['id' => $campaign->product_id])->first();
         // return $product;
-        
+
         $productcolors = ProductVariable::where('product_id', $campaign->product_id)->where('stock', '>', 0)
             ->whereNotNull('color')
             ->select('color')

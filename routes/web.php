@@ -72,7 +72,7 @@ Route::group(['namespace' => 'Frontend', 'middleware' => ['ipcheck', 'check_refe
     Route::get('product/{id}', [FrontendController::class, 'details'])->name('product');
     Route::get('quick-view', [FrontendController::class, 'quickview'])->name('quickview');
     Route::get('/shipping-charge', [FrontendController::class, 'shipping_charge'])->name('shipping.charge');
-    
+
     Route::get('/shipping-charge/campaign', [FrontendController::class, 'shipping_charge_cam'])->name('shipping.charge.campaign');
     Route::get('site/contact-us', [FrontendController::class, 'contact'])->name('contact');
     Route::get('/page/{slug}', [FrontendController::class, 'page'])->name('page');
@@ -88,6 +88,7 @@ Route::group(['namespace' => 'Frontend', 'middleware' => ['ipcheck', 'check_refe
 
     // cart route
     Route::post('cart/store', [ShoppingController::class, 'cart_store'])->name('cart.store');
+    Route::post('ajax-cart-store', [ShoppingController::class, 'ajax_cart_store'])->name('ajax.cart.store');
 
     Route::get('/add-to-cart/{id}/{qty}', [ShoppingController::class, 'addTocartGet']);
 
@@ -103,10 +104,11 @@ Route::group(['namespace' => 'Frontend', 'middleware' => ['ipcheck', 'check_refe
     Route::get('cart/decrement', [ShoppingController::class, 'cart_decrement'])->name('cart.decrement');
 
     Route::get('cart/increment', [ShoppingController::class, 'cart_increment'])->name('cart.increment');
-
+    Route::get('mini/cart', [ShoppingController::class, 'mini_cart'])->name('mini.cart');
+    Route::get('mini-cart/toggle', [ShoppingController::class, 'mini_cart_toggle'])->name('mini.cart_toggle');
     Route::get('cart/decrement-bn', [ShoppingController::class, 'cart_decrement_bn'])->name('cart.decrement_bn');
     Route::get('cart/increment-bn', [ShoppingController::class, 'cart_increment_bn'])->name('cart.increment_bn');
-    
+
      // compare route
     Route::get('add-to-compare/{id}', [ShoppingController::class, 'add_compare'])->name('compare.add');
     Route::get('compare/content/', [ShoppingController::class, 'compare_content'])->name('compare.content');
@@ -470,7 +472,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'lock', 'check_re
     Route::get('order-pathao', [OrderController::class, 'order_pathao'])->name('admin.order.pathao');
     Route::get('/pathao-city', [OrderController::class, 'pathaocity'])->name('pathaocity');
     Route::get('/pathao-zone', [OrderController::class, 'pathaozone'])->name('pathaozone');
-    
+
     // district routes
     Route::get('district/manage', [DistrictController::class, 'index'])->name('districts.index');
     Route::get('district/{id}/edit', [DistrictController::class, 'edit'])->name('districts.edit');

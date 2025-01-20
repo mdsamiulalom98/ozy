@@ -12,22 +12,30 @@
     @endphp
     <div class="container">
         <div class="row">
-            <div class="col-sm-5 cus-order-2">
+            <div class="col-sm-5 cus-order-2 mb-4">
                 <div class="checkout-shipping">
-                    <form action="{{ route('customer.ordersave') }}" method="POST" data-parsley-validate="">
-                        @csrf
-                        <div class="card">
-                            <div class="card-header">
-                                <h4>Fill in the information to confirm your order <span style="color:#fe5200;"> "Place Order" </span>
-                                     Click the button or call this number to order by phone
-                                         <a style="color:#fe5200;" Click on href="tel:{{ $contact->hotline }}">{{ $contact->hotline }}</a>.</h4>
+                    <div class="card">
+                        <div class="card-header">
+                            {{-- <h4>Fill in the information to confirm your order <span style="color:#fe5200;"> "Place
+                                    Order" </span>
+                                Click the button or call this number to order by phone
+                                <a style="color:#fe5200;" Click on
+                                    href="tel:{{ $contact->hotline }}">{{ $contact->hotline }}</a>.
+                            </h4> --}}
+                            <h4>ক্যাশ অন ডেলিভারিতে অর্ডার করতে আপনার তথ্য দিন </h4>
 
-                            </div>
-                            <div class="card-body">
+                        </div>
+                        <div class="card-body">
+                            <form action="{{ route('customer.ordersave') }}" id="checkoutForm" method="POST"
+                                data-parsley-validate="">
+                                @csrf
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <div class="form-group mb-3">
-                                            <label for="name">Your Name *</label>                                            
+                                        <div class="form-group customized-input-box mb-3">
+                                            <label for="name">Your Name *</label>
+                                            <span class="input-icon-label">
+                                                <i class="fa fa-user"></i>
+                                            </span>
                                             <input type="text" placeholder ="Name" id="name"
                                                 class="form-control @error('name') is-invalid @enderror" name="name"
                                                 value="{{ old('name') }}" required />
@@ -40,10 +48,13 @@
                                     </div>
                                     <!-- col-end -->
                                     <div class="col-sm-12">
-                                        <div class="form-group mb-3">
+                                        <div class="form-group customized-input-box mb-3">
                                             <label for="phone">Phone Number*</label>
-                                            <input placeholder ="Your Phone" type="text" minlength="11" id="number" maxlength="11"
-                                                pattern="0[0-9]+"
+                                            <span class="input-icon-label">
+                                                <i class="fa fa-phone"></i>
+                                            </span>
+                                            <input placeholder ="Your Phone" type="text" minlength="11"
+                                                id="number" maxlength="11" pattern="0[0-9]+"
                                                 title="please enter number only and 0 must first character"
                                                 title="Please enter an 11-digit number." id="phone"
                                                 class="form-control @error('phone') is-invalid @enderror" name="phone"
@@ -56,24 +67,13 @@
                                         </div>
                                     </div>
                                     <!-- col-end -->
-                                    
+
                                     <div class="col-sm-12">
-                                        <div class="form-group mb-3">
-                                            <label for="email">Email (Optional)</label>
-                                            <input placeholder ="Email Address" type="email" id="email"
-                                                class="form-control @error('email') is-invalid @enderror"
-                                                name="email" value="{{ old('email') }}"/>
-                                            @error('email')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="col-sm-12">
-                                        <div class="form-group mb-3">
+                                        <div class="form-group customized-input-box mb-3">
                                             <label for="address">Address*</label>
+                                            <span class="input-icon-label">
+                                                <i class="fa fa-map-location-dot"></i>
+                                            </span>
                                             <input placeholder ="Your Address" type="address" id="address"
                                                 class="form-control @error('address') is-invalid @enderror"
                                                 name="address" value="{{ old('address') }}" required />
@@ -84,27 +84,29 @@
                                             @enderror
                                         </div>
                                     </div>
-                                    
-                                    
+
+
                                     <div class="col-sm-12">
                                         <div class="form-group mb-3">
                                             <label for="area">Select Delivery Area *</label>
-                                            <select type="area" id="area"
-                                                class="form-control @error('area') is-invalid @enderror" name="area"
-                                                required>
-                                                <option value="">Select...</option>
+                                            <div class="shipping-area-box">
                                                 @foreach ($shippingcharge as $key => $value)
-                                                    <option value="{{ $value->id }}">{{ $value->name }}</option>
+                                                    <div class="area-item" data-id="{{ $value->id }}">
+                                                        <input name="area" id="area-{{ $key + 1 }}"
+                                                            type="radio" value="{{ $value->id }}">
+                                                        <label
+                                                            for="area-{{ $key + 1 }}">{{ $value->name }}</label>
+                                                    </div>
                                                 @endforeach
-                                            </select>
-                                            @error('email')
+                                            </div>
+                                            @error('area')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
                                             @enderror
                                         </div>
                                     </div>
-                                   {{-- <div class="col-sm-6">
+                                    {{-- <div class="col-sm-6">
                                         <div class="form-group mb-3">
                                             <!--<label for="district">District *</label>-->
                                             <select id="district"
@@ -138,9 +140,10 @@
                                                 </span>
                                             @enderror
                                         </div>
-                                    </div>--}}
+                                    </div>
+                                    --}}
                                     <!-- col-end -->
-                                  
+
                                     <div class="col-sm-12">
                                         @if (Session::get('free_shipping') != 1)
                                             <div class="radio_payment">
@@ -173,8 +176,9 @@
 
                                             @if ($shurjopay_gateway)
                                                 <div class="form-check p_shurjo payment_method" data-id="shurjopay">
-                                                    <input class="form-check-input" type="radio" name="payment_method"
-                                                        id="inlineRadio3" value="shurjopay" required />
+                                                    <input class="form-check-input" type="radio"
+                                                        name="payment_method" id="inlineRadio3" value="shurjopay"
+                                                        required />
                                                     <label class="form-check-label" for="inlineRadio3">
                                                         Shurjopay
                                                     </label>
@@ -182,108 +186,8 @@
                                             @endif
                                         </div>
                                     </div>
-
-
-                                    <!-------------------->
-                                    <div class="col-sm-12">
-                                        <div class="form-group">
-                                            <button class="order_place" type="submit">Order Now</button>
-                                        </div>
-                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <!-- card end -->
-
-
-
-
-                    </form>
-                </div>
-            </div>
-            <!-- col end -->
-            <div class="col-sm-7 cust-order-1">
-                <div class="cart_details table-responsive-sm">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5>ORDER DETAILS</h5>
-                        </div>
-                        <div class="card-body cartlist">
-                            <table class="cart_table table table-bordered table-striped text-center mb-0">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 20%;">Delete</th>
-                                        <th style="width: 40%;">Product</th>
-                                        <th style="width: 20%;">Qty</th>
-                                        <th style="width: 20%;">Price</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    @foreach (Cart::instance('shopping')->content() as $value)
-                                        <tr>
-                                            <td>
-                                                <a class="cart_remove" data-id="{{ $value->rowId }}"><i
-                                                        class="fas fa-trash text-danger"></i></a>
-                                            </td>
-                                            <td class="text-left">
-                                                <a href="{{ route('product', $value->options->slug) }}"> <img
-                                                        src="{{ asset($value->options->image) }}" />
-                                                    {{ Str::limit($value->name, 20) }}</a>
-                                                @if ($value->options->product_size)
-                                                    <p>Size: {{ $value->options->product_size }}</p>
-                                                @endif
-                                                @if ($value->options->product_color)
-                                                    <p>Color: {{ $value->options->product_color }}</p>
-                                                @endif
-                                            </td>
-                                            <td class="cart_qty">
-                                                <div class="qty-cart vcart-qty">
-                                                    <div class="quantity">
-                                                        <button class="minus cart_decrement"
-                                                            data-id="{{ $value->rowId }}">-</button>
-                                                        <input type="text" value="{{ $value->qty }}" readonly />
-                                                        <button class="plus cart_increment"
-                                                            data-id="{{ $value->rowId }}">+</button>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td><span class="">৳ </span><strong>{{ $value->price }}</strong>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="3" class="text-end px-4">Total</th>
-                                        <td class="px-4">
-                                            <span id="net_total"><span class="">৳
-                                                </span><strong>{{ $subtotal }}</strong></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="3" class="text-end px-4">Delevery Charge</th>
-                                        <td class="px-4">
-                                            <span id="cart_shipping_cost"><span class="">৳
-                                                </span><strong>{{ $shipping }}</strong></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="3" class="text-end px-4">Discount</th>
-                                        <td class="px-4">
-                                            <span id="cart_shipping_cost"><span class="">৳
-                                                </span><strong>{{ $discount + $coupon }}</strong></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="3" class="text-end px-4">Total</th>
-                                        <td class="px-4">
-                                            <span id="grand_total"><span class="">৳
-                                                </span><strong>{{ $subtotal + $shipping - ($discount + $coupon) }}</strong></span>
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                            </form>
                             <form
                                 action="@if (Session::get('coupon_used')) {{ route('customer.coupon_remove') }} @else {{ route('customer.coupon') }} @endif"
                                 class="checkout-coupon-form" method="POST">
@@ -297,6 +201,79 @@
                                         class="border-0 shadow-none btn btn-theme" />
                                 </div>
                             </form>
+                        </div>
+                    </div>
+                    <!-- card end -->
+
+                </div>
+            </div>
+            <!-- col end -->
+            <div class="col-sm-7 cust-order-1">
+                <div class="cart_details table-responsive-sm">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>ORDER DETAILS</h5>
+                        </div>
+                        <div class="card-body cartlist">
+                            @foreach (Cart::instance('shopping')->content() as $value)
+                                <div class="checkout-cart-item">
+                                    <div class="checkout-cart-image">
+                                        <img src="{{ asset($value->options->image) }}" />
+                                        <div class="checkout-cart-quantity">
+                                            {{ $value->qty }}
+                                        </div>
+                                    </div>
+                                    <div class="checkout-cart-info">
+                                        <a href="{{ route('product', $value->options->slug) }}">
+                                            {{ Str::limit($value->name, 50) }}</a>
+                                        @if ($value->options->product_size)
+                                            <p>Size: {{ $value->options->product_size }}</p>
+                                        @endif
+                                        @if ($value->options->product_color)
+                                            <p>Color: {{ $value->options->product_color }}</p>
+                                        @endif
+                                    </div>
+                                    <div class="checkout-cart-prices"><span class="">৳ </span><strong>{{ $value->price }}</strong>
+                                    </div>
+                                    <div class="checkout-cart-remove">
+                                        <a class="cart_remove" data-id="{{ $value->rowId }}"><i
+                                                class="fas fa-times "></i></a>
+                                    </div>
+                                </div>
+                            @endforeach
+                            <div class="checkout-cart-summary">
+                                <div class="checkout-summary-item">
+                                    <div  class="text-end px-4 left">Total</div>
+                                    <div class="px-4 right">
+                                        <span id="net_total"><span class="">৳
+                                            </span><strong>{{ $subtotal }}</strong></span>
+                                    </div>
+                                </div>
+                                <div class="checkout-summary-item">
+                                    <div  class="text-end px-4 left">Delevery Charge</div>
+                                    <div class="px-4 right">
+                                        <span id="cart_shipping_cost"><span class="">৳
+                                            </span><strong>{{ $shipping }}</strong></span>
+                                    </div>
+                                </div>
+
+                                <div class="checkout-summary-item">
+                                    <div  class="text-end px-4 left">Total</div>
+                                    <div class="px-4 right">
+                                        <span id="grand_total"><span class="">৳
+                                            </span><strong>{{ $subtotal + $shipping - ($discount + $coupon) }}</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="p-3" style="padding-top: 0;">
+                            <div class="form-group">
+                                <button style=""
+                                    onclick="event.preventDefault();
+                                document.getElementById('checkoutForm').submit();"
+                                    class="order_place" type="submit">Order Now</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -314,7 +291,7 @@
         $(".select2").select2();
     });
 </script>
-<script>
+{{-- <script>
     $("#area").on("change", function() {
         var id = $(this).val();
         $.ajax({
@@ -329,7 +306,31 @@
             },
         });
     });
+</script> --}}
+<script>
+    var firstItem = $(".area-item").first();
+    firstItem.addClass("active");
+    var firstRadioInput = firstItem.find("input[type='radio']").first();
+    firstRadioInput.prop("checked", true);
+
+    $(".area-item").on("click", function() {
+        var id = $(this).data("id");
+        $(".area-item").removeClass('active');
+        $(this).addClass('active');
+        $.ajax({
+            type: "GET",
+            data: {
+                id: id
+            },
+            url: "{{ route('shipping.charge') }}",
+            dataType: "html",
+            success: function(response) {
+                $(".cartlist").html(response);
+            },
+        });
+    });
 </script>
+
 <script type="text/javascript">
     dataLayer.push({
         ecommerce: null
@@ -351,7 +352,7 @@
                         item_color: "{{ $cartInfo->options->color }}",
                         currency: "BDT",
                         quantity: {{ $cartInfo->qty ?? 0 }},
-                        
+
                     },
                 @endforeach
             ]

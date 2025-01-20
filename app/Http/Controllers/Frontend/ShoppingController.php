@@ -16,22 +16,58 @@ class ShoppingController extends Controller
 
     public function addTocartGet($id, Request $request)
     {
-        return "ok";
+        $productInfo = DB::table('products')->where('id', $id)->select('id', 'name', 'new_price', 'old_price', 'slug', 'purchase_price', 'category_id', 'type', 'stock')->first();
+        $var_product = ProductVariable::where(['product_id' => $id])->first();
+        if ($productInfo->type == 0) {
+            $purchase_price = $var_product->purchase_price ?? 0;
+            $old_price = $var_product->old_price ?? 0;
+            $new_price = $var_product->new_price ?? 0;
+            $stock = $var_product->stock ?? 0;
+        } else {
+            $purchase_price = $productInfo->purchase_price ?? 0;
+            $old_price = $productInfo->old_price ?? 0;
+            $new_price = $productInfo->new_price ?? 0;
+            $stock = $productInfo->stock ?? 0;
+        }
+
         $qty = 1;
-        $productInfo = DB::table('products')->where('id', $id)->first();
+
+        if ($stock < $qty) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Product stock limit over',
+            ]);
+        }
         $productImage = DB::table('productimages')->where('product_id', $id)->first();
         $cartinfo = Cart::instance('shopping')->add([
-            'id' => $productInfo->id, 'name' => $productInfo->name, 'qty' => $qty, 'price' => $productInfo->new_price,
+            'id' => $productInfo->id,
+            'name' => $productInfo->name,
+            'qty' => $qty,
+            'price' => $new_price,
+            'weight' => 1,
             'options' => [
                 'image' => $productImage->image,
-                'old_price' => $productInfo->old_price,
+                'old_price' => $old_price,
                 'slug' => $productInfo->slug,
-                'purchase_price' => $productInfo->purchase_price,
+                'purchase_price' => $purchase_price,
+                'category_id' => $productInfo->category_id,
+                'product_size' => $request->product_size,
+                'product_color' => $request->product_color,
+                'type' => $productInfo->type,
             ]
         ]);
 
-        // return redirect()->back();
-        return response()->json($cartinfo);
+        Session::forget('shipping');
+        $shipping_fee = $productInfo->campaign->shippingfee ?? 0;
+        Session::put('shipping', $shipping_fee);
+
+        // $updatedHtml = view('frontEnd.layouts.partials.product_buttons', ['value' => $productInfo])->render();
+
+        return response()->json([
+            'success' => true,
+            'cartinfo' => $cartinfo,
+            // 'updatedHtml' => $updatedHtml,
+        ]);
     }
 
     public function cart_store(Request $request)
@@ -93,13 +129,72 @@ class ShoppingController extends Controller
                 'free_shipping' => $product->free_shipping ? $product->free_shipping : 0
             ],
         ]);
-    
+
         Toastr::success('Product successfully add to cart', 'Success!');
         if ($request->add_cart) {
             return back();
         }
         return redirect()->route('customer.checkout');
-       
+
+    }
+    public function ajax_cart_store(Request $request)
+    {
+        $productInfo = Product::select('id', 'name', 'slug', 'new_price', 'old_price', 'purchase_price', 'type', 'stock', 'category_id')->where(['id' => $request->id])->first();
+        $var_product = ProductVariable::query()
+            ->where('product_id', $request->id)
+            ->when($request->has('product_color') && $request->product_color, function ($query) use ($request) {
+                $query->where('color', $request->product_color);
+            })
+            ->when($request->has('product_size') && $request->product_size, function ($query) use ($request) {
+                $query->where('size', $request->product_size);
+            })
+            ->first();
+
+        if ($productInfo->type == 0) {
+            $purchase_price = $var_product ? $var_product->purchase_price : 0;
+            $old_price = $var_product ? $var_product->old_price : 0;
+            $new_price = $var_product ? $var_product->new_price : 0;
+            $stock = $var_product ? $var_product->stock : 0;
+        } else {
+            $purchase_price = $productInfo->purchase_price;
+            $old_price = $productInfo->old_price;
+            $new_price = $productInfo->new_price;
+            $stock = $productInfo->stock ?? 0;
+        }
+
+        $cartitem = Cart::instance('shopping')->content()->where('id', $productInfo->id)->first();
+        if ($cartitem) {
+            $cart_qty = $cartitem->qty + $request->qty ?? 1;
+        } else {
+            $cart_qty = $request->qty ?? 1;
+        }
+        if ($stock < $cart_qty) {
+            return response()->json(['success' => false, 'message' => 'Product stock limit over']);
+        }
+
+        Cart::instance('shopping')->add([
+            'id' => $productInfo->id,
+            'name' => $productInfo->name,
+            'qty' => $request->qty ?? 1,
+            'price' => $new_price,
+            'weight' => 1,
+            'options' => [
+                'slug' => $productInfo->slug,
+                'image' => $productInfo->image->image,
+                'old_price' => $old_price ?? $new_price,
+                'purchase_price' => $purchase_price,
+                'product_size' => $request->product_size,
+                'product_color' => $request->product_color,
+                'type' => $productInfo->type,
+                'category_id' => $productInfo->category_id,
+                'free_shipping' => 0
+            ],
+        ]);
+        if ($request->addcart) {
+            return response()->json(['success' => true, 'redirect' => false, 'message' => 'Successfully added to cart!']);
+        }
+        return response()->json(['success' => true, 'redirect' => true, 'message' => 'Successfully added to cart!']);
+
     }
     public function campaign_stock(Request $request)
     {
@@ -172,9 +267,9 @@ class ShoppingController extends Controller
         $data = Cart::instance('shopping')->content();
         return view('frontEnd.layouts.ajax.cart_bn', compact('data'));
     }
-    
-    
-    
+
+
+
     public function wishlist_store(Request $request)
     {
         $product = Product::select('id', 'name', 'slug', 'old_price', 'new_price', 'purchase_price')->where(['id' => $request->id])->first();
@@ -211,7 +306,7 @@ class ShoppingController extends Controller
     }
 
 
-       // compare product functions
+    // compare product functions
 
     public function add_compare($id)
     {
@@ -258,10 +353,10 @@ class ShoppingController extends Controller
             ->where('product_id', $id)
             ->first();
         Cart::instance('shopping')->add([
-            'id' => $productInfo->id, 
-            'name' => $productInfo->name, 
-            'qty' => $qty, 
-            'price' => $productInfo->new_price, 
+            'id' => $productInfo->id,
+            'name' => $productInfo->name,
+            'qty' => $qty,
+            'price' => $productInfo->new_price,
             'options' => [
                 'image' => $productImage->image
             ]
@@ -282,4 +377,17 @@ class ShoppingController extends Controller
             return redirect('/');
         }
     }
+
+    public function mini_cart()
+    {
+        $data = Cart::instance('shopping')->content();
+        return view('frontEnd.layouts.partials.mini_cart', compact('data'));
+    }
+
+    public function mini_cart_toggle()
+    {
+        $data = Cart::instance('shopping')->content();
+        return view('frontEnd.layouts.ajax.cart_toggle_button', compact('data'));
+    }
+
 }
