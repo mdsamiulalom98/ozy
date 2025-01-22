@@ -164,120 +164,129 @@
                                                     <p><span>SKU : </span>{{ $details->product_code }}</p>
                                                 </div>
 
-                                                    <input type="hidden" name="id" value="{{ $details->id }}" />
-                                                    @if ($productcolors->count() > 0)
-                                                        <div class="pro-color" style="width: 100%;">
-                                                            <div class="color_inner">
-                                                                <p>Color -</p>
-                                                                <div class="size-container">
-                                                                    <div class="selector">
-                                                                        @foreach ($productcolors as $key => $procolor)
-                                                                            <div class="selector-item color-item"
-                                                                                data-id="{{ $key }}">
-                                                                                {{ $procolor->image }}
-                                                                                <input type="radio"
-                                                                                    id="fc-option{{ $procolor->color }}"
-                                                                                    value="{{ $procolor->color }}"
-                                                                                    name="product_color"
-                                                                                    class="selector-item_radio emptyalert stock_color stock_check"
-                                                                                    required
-                                                                                    data-color="{{ $procolor->color }}" />
-                                                                                <label
-                                                                                    for="fc-option{{ $procolor->color }}"
-                                                                                    class="selector-item_label">{{ $procolor->color }}
-                                                                                </label>
-                                                                            </div>
-                                                                        @endforeach
-                                                                    </div>
+                                                <input type="hidden" name="id" value="{{ $details->id }}" />
+                                                @if ($productcolors->count() > 0)
+                                                    <div class="pro-color" style="width: 100%;">
+                                                        <div class="color_inner">
+                                                            <p>Color -</p>
+                                                            <div class="size-container">
+                                                                <div class="selector">
+                                                                    @foreach ($productcolors as $key => $procolor)
+                                                                        <div class="selector-item color-item"
+                                                                            data-id="{{ $key }}">
+                                                                            {{ $procolor->image }}
+                                                                            <input type="radio"
+                                                                                id="fc-option{{ $procolor->color }}"
+                                                                                value="{{ $procolor->color }}"
+                                                                                name="product_color"
+                                                                                class="selector-item_radio emptyalert variable_color stock_color stock_check"
+                                                                                required
+                                                                                data-color="{{ $procolor->color }}" />
+                                                                            <label for="fc-option{{ $procolor->color }}"
+                                                                                class="selector-item_label">{{ $procolor->color }}
+                                                                            </label>
+                                                                        </div>
+                                                                    @endforeach
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    @endif
-                                                    @if ($productsizes->count() > 0)
-                                                        <div class="pro-size" style="width: 100%;">
-                                                            <div class="size_inner">
-                                                                <p>Size - <span class="attibute-name"></span></p>
-                                                                <div class="size-container">
-                                                                    <div class="selector">
-                                                                        @foreach ($productsizes as $prosize)
-                                                                            <div class="selector-item">
-                                                                                <input type="radio"
-                                                                                    id="f-option{{ $prosize->size }}"
-                                                                                    value="{{ $prosize->size }}"
-                                                                                    name="product_size"
-                                                                                    class="selector-item_radio emptyalert stock_size stock_check"
-                                                                                    data-size="{{ $prosize->size }}"
-                                                                                    required />
-                                                                                <label for="f-option{{ $prosize->size }}"
-                                                                                    class="selector-item_label">{{ $prosize->size }}</label>
-                                                                            </div>
-                                                                        @endforeach
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    @endif
-
-                                                    @if ($details->pro_unit)
-                                                        <div class="pro_unig">
-                                                            <label>Unit: {{ $details->pro_unit }}</label>
-                                                            <input type="hidden" name="pro_unit"
-                                                                value="{{ $details->pro_unit }}" />
-                                                        </div>
-                                                    @endif
-                                                    <div class="pro_brand">
-                                                        <p>Brand :
-                                                            {{ $details->brand ? $details->brand->name : 'N/A' }}
-                                                        </p>
                                                     </div>
-
-                                                    <div class="row">
-                                                        <div class="qty-cart col-sm-6">
-                                                            <div class="quantity">
-                                                                <span class="minus">-</span>
-                                                                <input type="text" name="qty" value="1" />
-                                                                <span class="plus">+</span>
+                                                @endif
+                                                @if ($productsizes->count() > 0)
+                                                    <div class="pro-size" style="width: 100%;">
+                                                        <div class="size_inner">
+                                                            <p>Size - <span class="attibute-name"></span></p>
+                                                            <div class="size-container">
+                                                                <div class="selector">
+                                                                    @foreach ($productsizes as $prosize)
+                                                                        <div class="selector-item">
+                                                                            <input type="radio"
+                                                                                id="f-option{{ $prosize->size }}"
+                                                                                value="{{ $prosize->size }}"
+                                                                                name="product_size"
+                                                                                class="selector-item_radio emptyalert variable_size stock_size stock_check"
+                                                                                data-size="{{ $prosize->size }}"
+                                                                                required />
+                                                                            <label for="f-option{{ $prosize->size }}"
+                                                                                class="selector-item_label">{{ $prosize->size }}</label>
+                                                                        </div>
+                                                                    @endforeach
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-sm-6">
-                                                            <div class="pro_brand stock"></div>
-                                                        </div>
-                                                        <div class="d-flex single_product col-sm-12">
-                                                            <button type="button" data-id="{{ $details->id }}" data-addcart="1"
-                                                                class="btn px-4 add_cart_btn detailsFormSubmit" id="add_to_cart"
-                                                                onclick="return sendSuccess();" name="add_cart"
-                                                                value="">Add to Cart</button>
+                                                    </div>
+                                                @endif
 
-                                                            <button type="button" data-id="{{ $details->id }}"
+                                                @if ($details->pro_unit)
+                                                    <div class="pro_unig">
+                                                        <label>Unit: {{ $details->pro_unit }}</label>
+                                                        <input type="hidden" name="pro_unit"
+                                                            value="{{ $details->pro_unit }}" />
+                                                    </div>
+                                                @endif
+                                                <div class="pro_brand">
+                                                    <p>Brand :
+                                                        {{ $details->brand ? $details->brand->name : 'N/A' }}
+                                                    </p>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="qty-cart col-sm-6">
+                                                        <div class="quantity">
+                                                            <span class="minus">-</span>
+                                                            <input type="text" name="qty" value="1" />
+                                                            <span class="plus">+</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="pro_brand stock"></div>
+                                                    </div>
+                                                    <div class="d-flex single_product col-sm-12">
+                                                        <button type="button" data-id="{{ $details->id }}"
+                                                            name="order_now"
+                                                            class="btn px-4 add_cart_btn detailsFormSubmit"
+                                                            id="add_to_cart" onclick="return sendSuccess();"
+                                                            name="add_cart" value=""><i
+                                                                class="fa fa-shopping-cart"></i>
+                                                            ক্যাশ অন ডেলিভারিতে অর্ডার করুন</button>
+
+                                                        {{-- <button type="button" data-id="{{ $details->id }}"
                                                                 class="btn px-4 order_now_btn order_now_btn_m detailsFormSubmit"
                                                                 onclick="return sendSuccess();" name="order_now"
-                                                                value="" id="order_now">Order Now</button>
-                                                        </div>
+                                                                value="" id="order_now">Order Now</button> --}}
                                                     </div>
-                                                    <div class="mt-md-2 mt-2">
-                                                        <h4 class="font-weight-bold">
-                                                            <a class="btn btn-success w-100 call_now_btn"
-                                                                href="tel: {{ $contact->hotline }}">
-                                                                <i class="fa fa-phone-square"></i>
-                                                                {{ $contact->hotline }}
-                                                            </a>
-                                                        </h4>
-                                                    </div>
-                                                    <div class="mt-md-2 mt-2">
-                                                        <div class="del_charge_area">
-                                                            <div class="alert alert-info text-xs">
-                                                                <div class="flext_area">
-                                                                    <i class="fa-solid fa-cubes"></i>
-                                                                    <div>
+                                                </div>
+                                                <div class="mt-md-2 mt-2">
+                                                    <h4 class="font-weight-bold ">
+                                                        <a class="btn btn-dark w-100 call_now_btn" target="_blank"
+                                                            href="https://m.me/ozybdofficial/">
+                                                            <img src="{{ asset('public/frontEnd/images/messenger.png') }}" alt="">
+                                                            Chat with us
+                                                        </a>
+                                                    </h4>
+                                                    <h4 class="font-weight-bold mt-2">
+                                                        <a class="btn btn-success w-100 call_now_btn" target="_blank"
+                                                            href="https://wa.me/8801877702077">
+                                                            <img src="{{ asset('public/frontEnd/images/whatsapp.png') }}" alt="">
+                                                            Whatsapp Us
+                                                        </a>
+                                                    </h4>
+                                                </div>
+                                                <div class="mt-md-2 mt-2">
+                                                    <div class="del_charge_area">
+                                                        <div class="alert alert-info text-xs">
+                                                            <div class="flext_area">
+                                                                <i class="fa-solid fa-cubes"></i>
+                                                                <div>
 
-                                                                        @foreach ($shippingcharge as $key => $value)
-                                                                            <span>{{ $value->name }} <br /></span>
-                                                                        @endforeach
-                                                                    </div>
+                                                                    @foreach ($shippingcharge as $key => $value)
+                                                                        <span>{{ $value->name }} <br /></span>
+                                                                    @endforeach
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -478,11 +487,10 @@
         </div>
     </section>
 
-    @endsection @push('script')
+@endsection
+@push('script')
     <script src="{{ asset('public/frontEnd/js/owl.carousel.min.js') }}"></script>
-
     <script src="{{ asset('public/frontEnd/js/zoomsl.min.js') }}"></script>
-
     <script>
         $(document).ready(function() {
             $(".details_slider").owlCarousel({
@@ -523,145 +531,63 @@
                     currency: "BDT",
                     quantity: 1
                 }],
-
             }
         });
     </script>
 
 
+{{--
+<script type="text/javascript">
+    $(document).ready(function() {
+    $('#add_to_cart').click(function() {
+        gtag("event", "add_to_cart", {
+            currency: "BDT",
+            value: 3199, // Cart value or total amount
+            items: [
+                    @foreach (Cart::instance('shopping')->content() as $cartInfo)
+                    {
+                        item_id: "{{ $cartInfo->id }}",
 
-    <!--    <script type="text/javascript">
-        -- >
-        <
-        !--$(document).ready(function() {
-            -- >
-            <
-            !--$('#add_to_cart').click(function() {
-                -- >
-                <
-                !--gtag("event", "add_to_cart", {
-                    -- >
-                    <
-                    !--currency: "BDT",
-                    -- >
-                    <
-                    !--value: 3199, // Cart value or total amount-->
-                    <
-                    !--items: [-- >
-                            <
-                            !--
-                            @foreach (Cart::instance('shopping')->content() as $cartInfo)
-                                -- >
-                                <
-                                !--{
-                                    -- >
-                                    <
-                                    !--item_id: "{{ $cartInfo->id }}",
-                                    -- >
-                                    <
-                                    !--item_name: "{{ $cartInfo->name }}",
-                                    -- >
-                                    <
-                                    !--price: "{{ $cartInfo->price }}",
-                                    -- >
-                                    <
-                                    !--currency: "BDT",
-                                    -- >
-                                    <
-                                    !--quantity: {{ $cartInfo->qty ?? 0 }}-- >
-                                        <
-                                        !--
-                                }, -- >
-                                <
-                                !--
-                            @endforeach -- >
-                            <
-                            !--
-                        ]-- >
-                        <
-                        !--
-                });
-                -- >
-                <
-                !--
+                        item_name: "{{ $cartInfo->name }}",
+
+                        price: "{{ $cartInfo->price }}",
+
+                        currency: "BDT",
+
+                        quantity: {{ $cartInfo->qty ?? 0 }}
+
+                    },
+
+                    @endforeach
+                ]
             });
-            -- >
-            <
-            !--
         });
-        -- >
-        <
-        !--
-    </script>-->
+    });
 
+</script>
 
-
-
-    <!--<script type="text/javascript">
-        -- >
-        <
-        !--$(document).ready(function() {
-            -- >
-            <
-            !--$('#order_now').click(function() {
-                -- >
-                <
-                !--gtag("event", "add_to_cart", {
-                    -- >
-                    <
-                    !--currency: "BDT",
-                    -- >
-                    <
-                    !--value: "1.5",
-                    -- >
-                    <
-                    !--items: [-- >
-                            <
-                            !--
-                            @foreach (Cart::instance('shopping')->content() as $cartInfo)
-                                -- >
-                                <
-                                !--{
-                                    -- >
-                                    <
-                                    !--item_id: "{{ $details->id }}",
-                                    -- >
-                                    <
-                                    !--item_name: "{{ $details->name }}",
-                                    -- >
-                                    <
-                                    !--price: "{{ $details->new_price }}",
-                                    -- >
-                                    <
-                                    !--currency: "BDT",
-                                    -- >
-                                    <
-                                    !--quantity: {{ $cartInfo->qty ?? 0 }}-- >
-                                        <
-                                        !--
-                                }, -- >
-                                <
-                                !--
-                            @endforeach -- >
-                            <
-                            !--
-                        ]-- >
-                        <
-                        !--
-                });
-                -- >
-                <
-                !--
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#order_now').click(function() {
+            gtag("event", "add_to_cart", {
+                currency: "BDT",
+                value: "1.5",
+                items: [
+                        @foreach (Cart::instance('shopping')->content() as $cartInfo)
+                            {
+                                item_id: "{{ $details->id }}",
+                                item_name: "{{ $details->name }}",
+                                price: "{{ $details->new_price }}",
+                                currency: "BDT",
+                                quantity: {{ $cartInfo->qty ?? 0 }}
+                            },
+                        @endforeach
+                    ]
             });
-            -- >
-            <
-            !--
         });
-        -- >
-        <
-        !--
-    </script>-->
-
+    });
+</script>
+--}}
     <!-- Data Layer End-->
     <script>
         $(document).ready(function() {
@@ -760,6 +686,7 @@
         $(".stock_check").on("click", function() {
             var color = $(".stock_color:checked").data('color');
             var size = $(".stock_size:checked").data('size');
+            $('.selector-item_label').removeClass('red');
             var id = {{ $details->id }};
             console.log(color);
             if (id) {

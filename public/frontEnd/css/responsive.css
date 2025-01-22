@@ -110,10 +110,9 @@
 }
 
 @media only screen and (min-width:320px) and (max-width:767px) {
-
     .mini-cart-wrapper {
-        right: -380px;
-        width: 340px;
+        right: -100%;
+        width: calc(100% - 40px); 
     }
     .d-flex.single_product {
         display: block !important;

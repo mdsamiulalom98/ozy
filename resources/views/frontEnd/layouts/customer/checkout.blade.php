@@ -32,11 +32,11 @@
                                 <div class="row">
                                     <div class="col-sm-12">
                                         <div class="form-group customized-input-box mb-3">
-                                            <label for="name">Your Name *</label>
+                                            <label for="name">আপনার নাম *</label>
                                             <span class="input-icon-label">
                                                 <i class="fa fa-user"></i>
                                             </span>
-                                            <input type="text" placeholder ="Name" id="name"
+                                            <input type="text" placeholder ="আপনার নাম " id="name"
                                                 class="form-control @error('name') is-invalid @enderror" name="name"
                                                 value="{{ old('name') }}" required />
                                             @error('name')
@@ -49,11 +49,11 @@
                                     <!-- col-end -->
                                     <div class="col-sm-12">
                                         <div class="form-group customized-input-box mb-3">
-                                            <label for="phone">Phone Number*</label>
+                                            <label for="phone">ফোন নাম্বার *</label>
                                             <span class="input-icon-label">
                                                 <i class="fa fa-phone"></i>
                                             </span>
-                                            <input placeholder ="Your Phone" type="text" minlength="11"
+                                            <input placeholder ="ফোন নাম্বার" type="text" minlength="11"
                                                 id="number" maxlength="11" pattern="0[0-9]+"
                                                 title="please enter number only and 0 must first character"
                                                 title="Please enter an 11-digit number." id="phone"
@@ -70,11 +70,11 @@
 
                                     <div class="col-sm-12">
                                         <div class="form-group customized-input-box mb-3">
-                                            <label for="address">Address*</label>
+                                            <label for="address">এড্রেস *</label>
                                             <span class="input-icon-label">
                                                 <i class="fa fa-map-location-dot"></i>
                                             </span>
-                                            <input placeholder ="Your Address" type="address" id="address"
+                                            <input placeholder="এড্রেস" type="address" id="address"
                                                 class="form-control @error('address') is-invalid @enderror"
                                                 name="address" value="{{ old('address') }}" required />
                                             @error('email')
@@ -88,7 +88,7 @@
 
                                     <div class="col-sm-12">
                                         <div class="form-group mb-3">
-                                            <label for="area">Select Delivery Area *</label>
+                                            <label for="area">শিপিং মেথড *</label>
                                             <div class="shipping-area-box">
                                                 @foreach ($shippingcharge as $key => $value)
                                                     <div class="area-item" data-id="{{ $value->id }}">
@@ -147,7 +147,7 @@
                                     <div class="col-sm-12">
                                         @if (Session::get('free_shipping') != 1)
                                             <div class="radio_payment">
-                                                <label id="payment_method">PAYMENT METHOD</label>
+                                                <label id="payment_method">পেমেন্ট মেথড </label>
                                                 <div class="payment_option">
                                                 </div>
                                             </div>
@@ -158,7 +158,7 @@
                                                     <input class="form-check-input" type="radio" name="payment_method"
                                                         id="inlineRadio1" value="Cash On Delivery" checked required />
                                                     <label class="form-check-label" for="inlineRadio1">
-                                                        Cash On Delivery
+                                                        ক্যাশ অন ডেলিভারি
                                                     </label>
                                                 </div>
                                             @endif
@@ -169,7 +169,7 @@
                                                         name="payment_method" id="inlineRadio2" value="bkash"
                                                         required />
                                                     <label class="form-check-label" for="inlineRadio2">
-                                                        Bkash
+                                                        বিকাশ
                                                     </label>
                                                 </div>
                                             @endif
@@ -180,7 +180,7 @@
                                                         name="payment_method" id="inlineRadio3" value="shurjopay"
                                                         required />
                                                     <label class="form-check-label" for="inlineRadio3">
-                                                        Shurjopay
+                                                        সূর্য পে
                                                     </label>
                                                 </div>
                                             @endif
@@ -188,16 +188,19 @@
                                     </div>
                                 </div>
                             </form>
-                            <form
-                                action="@if (Session::get('coupon_used')) {{ route('customer.coupon_remove') }} @else {{ route('customer.coupon') }} @endif"
-                                class="checkout-coupon-form" method="POST">
+                            <form class="checkout-coupon-form" method="POST"
+                            @if (Session::get('coupon_used'))
+                            action="{{ route('customer.coupon_remove') }}"
+                            @else
+                            action="{{ route('customer.coupon') }}"
+                            @endif >
                                 @csrf
                                 <div class="coupon">
                                     <input type="text" name="coupon_code"
-                                        placeholder=" @if (Session::get('coupon_used')) {{ Session::get('coupon_used') }} @else Apply Coupon @endif"
+                                        placeholder="{{ Session::get('coupon_used') ?? 'কুপন কোড' }}"
                                         class="border-0 shadow-none form-control" />
                                     <input type="submit"
-                                        value="@if (Session::get('coupon_used')) remove @else apply @endif "
+                                        value="{{ Session::get('coupon_used') ? 'রিমুভ' : 'এপ্লাই' }}"
                                         class="border-0 shadow-none btn btn-theme" />
                                 </div>
                             </form>
@@ -212,7 +215,7 @@
                 <div class="cart_details table-responsive-sm">
                     <div class="card">
                         <div class="card-header">
-                            <h5>ORDER DETAILS</h5>
+                            <h5>অর্ডার বিবরণ </h5>
                         </div>
                         <div class="card-body cartlist">
                             @foreach (Cart::instance('shopping')->content() as $value)
@@ -243,14 +246,14 @@
                             @endforeach
                             <div class="checkout-cart-summary">
                                 <div class="checkout-summary-item">
-                                    <div  class="text-end px-4 left">Total</div>
+                                    <div  class="text-end px-4 left">সাব টোটাল</div>
                                     <div class="px-4 right">
                                         <span id="net_total"><span class="">৳
                                             </span><strong>{{ $subtotal }}</strong></span>
                                     </div>
                                 </div>
                                 <div class="checkout-summary-item">
-                                    <div  class="text-end px-4 left">Delevery Charge</div>
+                                    <div  class="text-end px-4 left">ডেলিভারি চার্জ</div>
                                     <div class="px-4 right">
                                         <span id="cart_shipping_cost"><span class="">৳
                                             </span><strong>{{ $shipping }}</strong></span>
@@ -258,7 +261,7 @@
                                 </div>
 
                                 <div class="checkout-summary-item">
-                                    <div  class="text-end px-4 left">Total</div>
+                                    <div  class="text-end px-4 left">সর্বমোট</div>
                                     <div class="px-4 right">
                                         <span id="grand_total"><span class="">৳
                                             </span><strong>{{ $subtotal + $shipping - ($discount + $coupon) }}</strong></span>
@@ -272,8 +275,11 @@
                                 <button style=""
                                     onclick="event.preventDefault();
                                 document.getElementById('checkoutForm').submit();"
-                                    class="order_place" type="submit">Order Now</button>
+                                    class="order_place" type="submit">আপনার অর্ডার কনফার্ম করতে ক্লিক করুন</button>
                             </div>
+                        </div>
+                        <div class="checkout-suggest-text">
+                            <h3>উপরের বাটনে ক্লিক করলে আপনার অর্ডারটি সাথে সাথে কনফার্ম হয়ে যাবে !</h3>
                         </div>
                     </div>
                 </div>

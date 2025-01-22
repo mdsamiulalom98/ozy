@@ -23,8 +23,8 @@
     <link rel="stylesheet" href="{{ asset('public/backEnd/') }}/assets/css/toastr.min.css" />
 
     <link rel="stylesheet" href="{{ asset('public/frontEnd/css/wsit-menu.css') }}" />
-    <link rel="stylesheet" href="{{ asset('public/frontEnd/css/style.css?v=1.1.9') }}" />
-    <link rel="stylesheet" href="{{ asset('public/frontEnd/css/responsive.css?v=1.2.1') }}" />
+    <link rel="stylesheet" href="{{ asset('public/frontEnd/css/style.css?v=1.2.1') }}" />
+    <link rel="stylesheet" href="{{ asset('public/frontEnd/css/responsive.css?v=1.2.3') }}" />
     <link rel="stylesheet" href="{{ asset('public/frontEnd/css/main.css') }}" />
     <script src="{{ asset('public/frontEnd/js/jquery-3.6.3.min.js') }}"></script>
 
@@ -518,11 +518,11 @@
             </li>
 
             <li>
-                <a href="https://wa.me/8801877702077">
+                <a href="https://www.facebook.com/share/g/19tBYq7Lyw/?mibextid=wwXIfr" target="_blank">
                     <span>
                         <i class="fa-solid fa-message"></i>
                     </span>
-                    <span>Message</span>
+                    <span>Review</span>
                 </a>
             </li>
 
@@ -699,6 +699,11 @@
                 var size = $(".variable_size:checked").data('size');
                 const productId = $(this).data('id');
                 const addcart = $(this).data('addcart');
+                if (!color) {
+                    toastr.warning("Please select a color before adding to the cart.", "Warning");
+                    $('.selector-item_label').addClass('red');
+                    return; // Stop further execution
+                }
                 $.ajax({
                     url: '{{ route('ajax.cart.store') }}',
                     type: 'POST',

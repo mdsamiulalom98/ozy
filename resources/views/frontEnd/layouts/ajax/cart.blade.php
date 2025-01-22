@@ -6,84 +6,52 @@
     $coupon = Session::get('coupon_amount') ? Session::get('coupon_amount') : 0;
     $discount = Session::get('discount') ? Session::get('discount') : 0;
 @endphp
-<style>
-       td.text-left a img {
-       height: 30px;
-   }
-</style>
-<table class="cart_table table table-bordered table-striped text-center mb-0">
-    <thead>
-        <tr>
-            <th style="width: 20%;">Delele</th>
-            <th style="width: 40%;">Product</th>
-            <th style="width: 20%;">Qty</th>
-            <th style="width: 20%;">Price</th>
-        </tr>
-    </thead>
+@foreach (Cart::instance('shopping')->content() as $value)
+    <div class="checkout-cart-item">
+        <div class="checkout-cart-image">
+            <img src="{{ asset($value->options->image) }}" />
+            <div class="checkout-cart-quantity">
+                {{ $value->qty }}
+            </div>
+        </div>
+        <div class="checkout-cart-info">
+            <a href="{{ route('product', $value->options->slug) }}">
+                {{ Str::limit($value->name, 50) }}</a>
+            @if ($value->options->product_size)
+                <p>Size: {{ $value->options->product_size }}</p>
+            @endif
+            @if ($value->options->product_color)
+                <p>Color: {{ $value->options->product_color }}</p>
+            @endif
+        </div>
+        <div class="checkout-cart-prices"><span class="">৳ </span><strong>{{ $value->price }}</strong>
+        </div>
+        <div class="checkout-cart-remove">
+            <a class="cart_remove" data-id="{{ $value->rowId }}"><i class="fas fa-times "></i></a>
+        </div>
+    </div>
+@endforeach
+<div class="checkout-cart-summary">
+    <div class="checkout-summary-item">
+        <div class="text-end px-4 left">সাব টোটাল</div>
+        <div class="px-4 right">
+            <span id="net_total"><span class="">৳
+                </span><strong>{{ $subtotal }}</strong></span>
+        </div>
+    </div>
+    <div class="checkout-summary-item">
+        <div class="text-end px-4 left">ডেলিভারি চার্জ</div>
+        <div class="px-4 right">
+            <span id="cart_shipping_cost"><span class="">৳
+                </span><strong>{{ $shipping }}</strong></span>
+        </div>
+    </div>
 
-    <tbody>
-        @foreach (Cart::instance('shopping')->content() as $value)
-            <tr>
-                <td>
-                    <a class="cart_remove" data-id="{{ $value->rowId }}"><i class="fas fa-trash text-danger"></i></a>
-                </td>
-                <td class="text-left">
-                    <a style="font-size: 14px;" href="{{ route('product', $value->options->slug) }}"> <img
-                            src="{{ asset($value->options->image) }}" />
-                        {{ Str::limit($value->name, 20) }}</a>
-                    @if ($value->options->product_size)
-                        <p>Size: {{ $value->options->product_size }}</p>
-                    @endif
-                    @if ($value->options->product_color)
-                        <p>Color: {{ $value->options->product_color }}</p>
-                    @endif
-                </td>
-                <td class="cart_qty">
-                    <div class="qty-cart vcart-qty">
-                        <div class="quantity">
-                            <button class="minus cart_decrement" data-id="{{ $value->rowId }}">-</button>
-                            <input type="text" value="{{ $value->qty }}" readonly />
-                            <button class="plus cart_increment" data-id="{{ $value->rowId }}">+</button>
-                        </div>
-                    </div>
-                </td>
-                <td><span class="">৳ </span><strong>{{ $value->price }}</strong>
-                </td>
-            </tr>
-        @endforeach
-    </tbody>
-    <tfoot>
-        <tr>
-            <th colspan="3" class="text-end px-4">Total</th>
-            <td class="px-4">
-                <span id="net_total"><span class="">৳
-                    </span><strong>{{ $subtotal }}</strong></span>
-            </td>
-        </tr>
-        <tr>
-            <th colspan="3" class="text-end px-4">Delevery Charge</th>
-            <td class="px-4">
-                <span id="cart_shipping_cost"><span class="">৳
-                    </span><strong>{{ $shipping }}</strong></span>
-            </td>
-        </tr>
-        <tr>
-            <th colspan="3" class="text-end px-4">Discount</th>
-            <td class="px-4">
-                <span id="cart_shipping_cost"><span class="">৳
-                    </span><strong>{{ $discount + $coupon }}</strong></span>
-            </td>
-        </tr>
-        <tr>
-            <th colspan="3" class="text-end px-4">Total</th>
-            <td class="px-4">
-                <span id="grand_total"><span class="">৳
-                    </span><strong>{{ $subtotal + $shipping - ($discount + $coupon) }}</strong></span>
-            </td>
-        </tr>
-    </tfoot>
-</table>
-
-
-
-<!-- cart js end -->
+    <div class="checkout-summary-item">
+        <div class="text-end px-4 left">সর্বমোট</div>
+        <div class="px-4 right">
+            <span id="grand_total"><span class="">৳
+                </span><strong>{{ $subtotal + $shipping - ($discount + $coupon) }}</strong></span>
+        </div>
+    </div>
+</div>
